@@ -7,8 +7,8 @@ import os
 def nt_log_on(domain, username, password):
     """
 
-    This feature is experimental for windows users that want to authenticate on the
-    local machine running this application.
+    This feature is experimental for windows hosts that want to authenticate on the
+    local machines domain running this application.
 
     # todo: This will eventually be changed to use ldap but I don't currently have a means to test this.
     :param domain:
@@ -37,7 +37,6 @@ def nt_log_on(domain, username, password):
                 password,
                 win32security.LOGON32_LOGON_NETWORK,
                 win32security.LOGON32_PROVIDER_DEFAULT)
-            print(token)
             authenticated = bool(token)
         except pywintypes.error:
             pass

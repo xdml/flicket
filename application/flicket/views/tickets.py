@@ -36,7 +36,7 @@ def tickets(page=1):
     user_id = request.args.get('user_id')
 
     if form.validate_on_submit():
-        redirect_url = FlicketTicket.form_redirect(form, page, url='flicket_bp.tickets')
+        redirect_url = FlicketTicket.form_redirect(form, url='flicket_bp.tickets')
 
         return redirect(redirect_url)
 
@@ -81,14 +81,26 @@ def tickets_csv():
 
     csv_contents = 'Ticket_ID,Priority,Title,Submitted By,Date,Replies,Category,Status,Assigned,URL\n'
     for ticket in ticket_query:
-        csv_contents += (f'{ticket.id_zfill},{ticket.ticket_priority.priority},'
-                         f'"{clean_csv_data(ticket.title)}",'
-                         f'{ticket.user.name},'
-                         f'{ticket.date_added.strftime("%Y-%m-%d")},{ticket.num_replies},'
-                         f'{clean_csv_data(ticket.category.department.department)} - '
-                         f'{clean_csv_data(ticket.category.category)},'
-                         f'{ticket.current_status.status},{ticket.assigned.name},'
-                         f'{app.config["base_url"]}{url_for("flicket_bp.ticket_view", ticket_id=ticket.id)}\n')
+
+        if hasattr(ticket.assigned, 'name'):
+            _name = ticket.assigned.name
+        else:
+            _name = 'Not assigned'
+
+        csv_contents += '{},{},"{}",{},{},{},{} - {},{},{},{}{}\n'.format(ticket.id_zfill,
+                                                                          ticket.ticket_priority.priority,
+                                                                          clean_csv_data(ticket.title),
+                                                                          ticket.user.name,
+                                                                          ticket.date_added.strftime("%Y-%m-%d"),
+                                                                          ticket.num_replies,
+                                                                          clean_csv_data(
+                                                                              ticket.category.department.department),
+                                                                          clean_csv_data(ticket.category.category),
+                                                                          ticket.current_status.status,
+                                                                          ticket.assigned.name,
+                                                                          app.config["base_url"],
+                                                                          url_for("flicket_bp.ticket_view",
+                                                                                  ticket_id=ticket.id))
 
     return Response(
         csv_contents,
@@ -112,7 +124,7 @@ def my_tickets(page=1):
     user_id = request.args.get('user_id')
 
     if form.validate_on_submit():
-        redirect_url = FlicketTicket.form_redirect(form, page, url='flicket_bp.my_tickets')
+        redirect_url = FlicketTicket.form_redirect(form, url='flicket_bp.my_tickets')
 
         return redirect(redirect_url)
 

@@ -208,7 +208,11 @@ class FlicketTicket(Base):
         :param kwargs:
         :return:
         """
+
         ticket_query = FlicketTicket.query
+
+        if kwargs['status'] is None:
+            ticket_query = ticket_query.filter(FlicketTicket.current_status.has(FlicketStatus.status != 'Closed'))
 
         for key, value in kwargs.items():
 
@@ -216,6 +220,7 @@ class FlicketTicket(Base):
                 ticket_query = ticket_query.filter(FlicketTicket.current_status.has(FlicketStatus.status == value))
                 if form:
                     form.status.data = FlicketStatus.query.filter_by(status=value).first().id
+
             if key == 'category' and value:
                 ticket_query = ticket_query.filter(FlicketTicket.category.has(FlicketCategory.category == value))
                 if form:
@@ -227,7 +232,9 @@ class FlicketTicket(Base):
                 if form:
                     form.department.data = department_filter.id
             if key == 'user_id' and value:
-                ticket_query = ticket_query.filter_by(assigned_id=int(value))
+                # ticket_query = ticket_query.filter_by(assigned_id=int(value))
+                ticket_query = ticket_query.filter(
+                    (FlicketTicket.assigned_id == int(value)) | (FlicketTicket.started_id == int(value)))
                 user = FlicketUser.query.filter_by(id=value).first()
                 if form:
                     form.username.data = user.username
@@ -261,7 +268,7 @@ class FlicketTicket(Base):
         return ticket_query
 
     @staticmethod
-    def form_redirect(form, page, url='flicket_bp.tickets'):
+    def form_redirect(form, url='flicket_bp.tickets'):
         """
 
         :param form:
@@ -288,7 +295,6 @@ class FlicketTicket(Base):
             status = FlicketStatus.query.filter_by(id=form.status.data).first().status
 
         redirect_url = url_for(url, content=form.content.data,
-                               page=page,
                                department=department,
                                category=category,
                                status=status,
