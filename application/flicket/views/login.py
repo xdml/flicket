@@ -10,7 +10,6 @@ from flask import (flash,
                    redirect,
                    render_template,
                    request,
-                   session,
                    url_for)
 from flask_login import (current_user,
                          login_user,
@@ -95,13 +94,11 @@ def login():
 
     if form.validate_on_submit():
         user = FlicketUser.query.filter_by(username=form.username.data).first()
-        session['remember_me'] = form.remember_me.data
         identity_changed.send(app, identity=Identity(user.id))
-        login_user(user)
+        login_user(user, remember=form.remember_me.data)
         # set the user token, authentication token is required for api use.
         user.get_token()
         db.session.commit()
-
         if user.email is None or user.email == '':
             flash(gettext('Please set your email and job title.'), category='danger')
             return redirect(url_for('flicket_bp.user_details'))
@@ -109,7 +106,7 @@ def login():
             flash(gettext('You were logged in successfully.'), category='success')
         return redirect(url_for('flicket_bp.index'))
 
-    return render_template('login.html', title='Log In', form=form)
+    return render_template('flicket_login.html', title='Log In', form=form)
 
 
 # logout page
@@ -141,4 +138,4 @@ def password_reset():
         return redirect(url_for('flicket_bp.login'))
 
     title = 'Password Reset'
-    return render_template('password_reset.html', form=form, title=title)
+    return render_template('flicket_password_reset.html', form=form, title=title)
