@@ -12,6 +12,7 @@ If you are migrating from earlier version (since 0.2.1) you should ensure:
 
 
 ## 0.2.1
+*   now requires python =>3.6
 *   **When upgrading from 0.2.0, follow:**
 
       * Do database backup according to your database engine.
@@ -73,6 +74,7 @@ If you are migrating from earlier version (since 0.2.1) you should ensure:
 *   Added carousel to front page showing all open high priority tickets.
 *   Added pie charts to front page showing overall ticket status for each department. Removed tables showing same data.
 *   Change category feature (user can put ticket into another "department / catagory").
+*   Added time tracking. Users can now see total hours spent per ticket.
 
 
 ## 0.2.0
