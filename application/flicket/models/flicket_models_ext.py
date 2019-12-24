@@ -38,7 +38,7 @@ class FlicketTicketExt:
         ticket_category = FlicketCategory.query.filter_by(id=int(category)).first()
 
         upload_attachments = UploadAttachment(files)
-        if upload_attachments.are_attachements():
+        if upload_attachments.are_attachments():
             upload_attachments.upload_files()
 
         # submit ticket data to database
@@ -79,6 +79,7 @@ class FlicketTicketExt:
         :param category:
         :param files:
         :param form_uploads:
+        :param hours:
         :return:
         """
         # before we make any changes store the original post content in the history table if it has changed.
@@ -123,7 +124,7 @@ class FlicketTicketExt:
 
         files = files
         upload_attachments = UploadAttachment(files)
-        if upload_attachments.are_attachements():
+        if upload_attachments.are_attachments():
             upload_attachments.upload_files()
 
         # add files to database.

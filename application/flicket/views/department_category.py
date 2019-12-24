@@ -11,11 +11,7 @@ from application import app, db
 from application.flicket.forms.flicket_forms import ChangeDepartmentCategoryForm
 from application.flicket.models.flicket_models import FlicketTicket
 from application.flicket.models.flicket_models import FlicketDepartmentCategory
-from application.flicket.models.flicket_models import FlicketStatus
-from application.flicket.models.flicket_models import FlicketSubscription
-from application.flicket.models.flicket_user import FlicketUser
 from application.flicket.scripts.flicket_functions import add_action
-from application.flicket.scripts.email import FlicketMail
 from . import flicket_bp
 
 
@@ -43,7 +39,8 @@ def ticket_department_category(ticket_id=False):
 
         if ticket.category_id == department_category.category_id:
             flash(gettext(
-                f'Category "{ticket.category.category} / {ticket.category.department.department}" is already assigned to ticket.'),
+                f'Category "{ticket.category.category} / {ticket.category.department.department}" '
+                'is already assigned to ticket.'),
                 category='warning')
             return redirect(url_for('flicket_bp.ticket_view', ticket_id=ticket.id))
 
